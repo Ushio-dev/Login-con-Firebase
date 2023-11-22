@@ -1,0 +1,18 @@
+/build
+
+*.iml
+/.idea/
+/.gradle/
+/build/
+
+# Archivos generados por Firebase
+/google-services.json
+
+# Archivos de configuración local
+/local.properties
+
+# Archivos específicos del IDE
+/.DS_Store
+
+# Otros archivos sensibles
+/.env
