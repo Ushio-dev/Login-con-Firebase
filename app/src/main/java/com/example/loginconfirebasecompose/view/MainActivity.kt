@@ -6,10 +6,14 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.loginconfirebasecompose.view.screens.LoginScreen
+import com.example.loginconfirebasecompose.view.screens.PrincipalScreen
 import com.example.loginconfirebasecompose.view.ui.theme.LoginConFirebaseComposeTheme
+import com.example.loginconfirebasecompose.viewmodel.LoginViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,17 +25,14 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    val navController = rememberNavController()
+                    val viewModel = LoginViewModel()
+                    NavHost(navController = navController, startDestination = "loginScreen") {
+                        composable("loginScreen") { LoginScreen(navController, viewModel) }
+                        composable("principalScreen") { PrincipalScreen()}
+                    }
                 }
             }
         }
     }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
 }
