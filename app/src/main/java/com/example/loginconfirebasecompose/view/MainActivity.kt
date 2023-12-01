@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
                     val viewModel = LoginViewModel()
                     NavHost(navController = navController, startDestination = "loginScreen") {
                         composable("loginScreen") { LoginScreen(navController, viewModel) }
-                        composable("principalScreen") { PrincipalScreen() }
+                        composable("principalScreen") { PrincipalScreen(viewModel, navController) }
                         composable("splashScreen") { SplashScreen(navController) }
                     }
                 }

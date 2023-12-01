@@ -66,4 +66,14 @@ class LoginViewModel(
     private fun isValidPassword(password: String): Boolean {
         return password.isNotEmpty() && password.length > 8
     }
+
+
+    fun signOut() {
+        try {
+            _uiState.value = LoginUIState.SignOut
+            authRepository.signOut()
+        } catch (e: Exception) {
+            _uiState.value = LoginUIState.Error
+        }
+    }
 }

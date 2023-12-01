@@ -18,4 +18,10 @@ class AuthRepositoryImpl(
             emit(LoginUIState.Error)
         }
     }
+
+    override fun signOut() {
+        auth.signOut()
+    }
+
+
 }
