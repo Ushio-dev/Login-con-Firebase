@@ -7,9 +7,6 @@ import com.example.loginconfirebasecompose.model.AuthRepositoryImpl
 import com.example.loginconfirebasecompose.view.LoginUIState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
@@ -24,6 +21,9 @@ class LoginViewModel(
     val usernameErrorState: StateFlow<Boolean>
         get() = _usernameErrorState
 
+    private val _passwordErrorState: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val passwordErrorState: StateFlow<Boolean>
+        get() = _passwordErrorState
 
     fun login(username: String, password: String) {
         if (isValidText(username)) {
@@ -57,9 +57,13 @@ class LoginViewModel(
         _uiState.value = LoginUIState.SignOut
     }
 
-    fun isValidText(username: String): Boolean {
+    private fun isValidText(username: String): Boolean {
         // android.util.Patterns.EMAIL_ADDRESS.matcher(username) valida el email
         //return username.matches(Regex("[a-zA-Z]+")) && android.util.Patterns.EMAIL_ADDRESS.matcher(username).matches()
         return android.util.Patterns.EMAIL_ADDRESS.matcher(username).matches()
+    }
+
+    private fun isValidPassword(password: String): Boolean {
+        return password.isNotEmpty() && password.length > 8
     }
 }
