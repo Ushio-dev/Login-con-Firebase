@@ -154,29 +154,27 @@ fun PasswordField(password: String, onPasswordChange: (String) -> Unit, isError:
         mutableStateOf(false)
     }
 
-    Row {
-        TextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp),
-            value = password,
-            onValueChange = onPasswordChange,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            visualTransformation = if (isHide) VisualTransformation.None else PasswordVisualTransformation(),
-            trailingIcon = {
-                val iconImage = if (isHide) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-                val description = if (isHide) "show password" else "hide password"
+    TextField(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp),
+        value = password,
+        onValueChange = onPasswordChange,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+        visualTransformation = if (isHide) VisualTransformation.None else PasswordVisualTransformation(),
+        trailingIcon = {
+            val iconImage = if (isHide) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+            val description = if (isHide) "show password" else "hide password"
 
-                IconButton(onClick = { isHide = !isHide }) {
-                    Icon(imageVector = iconImage, contentDescription = description)
-                }
-            },
-            label = { Text(text = "Contraseña") },
-            isError = isError
-        )
-        if (isError) {
-            Text(text = "Ingrese contraseña")
-        }
+            IconButton(onClick = { isHide = !isHide }) {
+                Icon(imageVector = iconImage, contentDescription = description)
+            }
+        },
+        label = { Text(text = "Contraseña") },
+        isError = isError
+    )
+    if (isError) {
+        Text(text = "Ingrese contraseña")
     }
 }
 
