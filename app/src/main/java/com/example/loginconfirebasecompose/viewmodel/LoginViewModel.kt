@@ -26,7 +26,10 @@ class LoginViewModel(
         get() = _passwordErrorState
 
     fun login(username: String, password: String) {
-        if (isValidText(username)) {
+        _usernameErrorState.value = isValidText(username)
+        _passwordErrorState.value = isValidPassword(password)
+
+        if (!_usernameErrorState.value && !_passwordErrorState.value) {
             viewModelScope.launch {
                 authRepository.login(username, password).collect {
                     when (it) {
@@ -48,8 +51,6 @@ class LoginViewModel(
                     }
                 }
             }
-        } else {
-            _usernameErrorState.value = true
         }
     }
 
@@ -64,7 +65,21 @@ class LoginViewModel(
     }
 
     private fun isValidPassword(password: String): Boolean {
-        return password.isNotEmpty() && password.length > 8
+        if (password.length < 8) {
+            return false
+        }
+
+        val isThereAnyNumber = password.any { it.isDigit() }
+        if (!isThereAnyNumber) {
+            return false
+        }
+
+        val isThereAnyNoAlphaNumer = password.any { it.isLetterOrDigit() }
+        if (!isThereAnyNoAlphaNumer) {
+            return false
+        }
+
+        return true
     }
 
 

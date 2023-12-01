@@ -174,7 +174,7 @@ fun PasswordField(password: String, onPasswordChange: (String) -> Unit, isError:
         isError = isError
     )
     if (isError) {
-        Text(text = "Ingrese contraseña")
+        Text(text = "La contraseña debe tener al menos 8 caracteres, 1 caracter numeros y 1 caracter alfanumericos")
     }
 }
 

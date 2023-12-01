@@ -33,6 +33,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
                     val viewModel = LoginViewModel()
+                    navController.popBackStack()
                     NavHost(navController = navController, startDestination = "loginScreen") {
                         composable("loginScreen") { LoginScreen(navController, viewModel) }
                         composable("principalScreen") { PrincipalScreen(viewModel, navController) }
