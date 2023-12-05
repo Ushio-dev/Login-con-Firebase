@@ -1,9 +1,10 @@
 package com.example.loginconfirebasecompose.view.screens
 
 import android.content.Context
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,7 +26,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -35,12 +35,16 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import com.example.loginconfirebasecompose.view.LoginUIState
 import com.example.loginconfirebasecompose.viewmodel.LoginViewModel
@@ -51,7 +55,25 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel) {
     val context = LocalContext.current
     when (viewModel.uiState.collectAsState().value) {
         LoginUIState.Error -> {
-            AlertCredentialError(viewModel = viewModel)
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.Top
+            ) {
+                AlertDialog(
+                    text = { Text(text = "Usuario o Contraseña incorrecto") },
+                    title = { Text(text = "Invalid Credentials") },
+                    onDismissRequest = {
+                        viewModel.confirmError()
+                    },
+                    confirmButton = {
+                        TextButton(onClick = { viewModel.confirmError() }) {
+                            Text(text = "Aceptar")
+                        }
+                    },
+                )
+            }
+
         }
 
         LoginUIState.Loading -> {
@@ -88,12 +110,14 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel) {
                 ) {
                     Text(text = "Sign In")
                     UsernameField(username = username, onUsernameChange = {
-                        username = it
+                        if (!it.equals(" ")) username = it
                     }, viewModel.usernameErrorState.collectAsState().value)
                     Spacer(modifier = Modifier.height(15.dp))
                     PasswordField(
                         password = password,
-                        onPasswordChange = { password = it },
+                        onPasswordChange = {
+                            if (!it.equals(" ")) password = it
+                        },
                         viewModel.passwordErrorState.collectAsState().value
                     )
                     Spacer(modifier = Modifier.height(30.dp))
@@ -113,16 +137,17 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel) {
 @Composable
 fun AlertCredentialError(viewModel: LoginViewModel) {
     AlertDialog(
+        text = { Text(text = "Usuario o Contraseña incorrecto") },
+        title = { Text(text = "Invalid Credentials") },
         onDismissRequest = {
-
+            viewModel.confirmError()
         },
         confirmButton = {
             TextButton(onClick = { viewModel.confirmError() }) {
                 Text(text = "Aceptar")
             }
         },
-        text = { Text(text = "Usuario o Contraseña incorrecto") },
-        title = { Text(text = "Invalid Credentials") })
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -136,13 +161,18 @@ fun UsernameField(username: String, onUsernameChange: (String) -> Unit, isError:
         onValueChange = onUsernameChange,
         label = { Text(text = "Email") },
         isError = isError,
+        maxLines = 1,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
     )
 
     if (isError) {
         Text(
             text = "Ingrese un usuario correcto",
             color = androidx.compose.ui.graphics.Color.Red,
-            textAlign = TextAlign.Start
+            textAlign = TextAlign.Start,
+            style = TextStyle(
+                fontSize = 15.sp
+            )
         )
     }
 }
@@ -154,7 +184,7 @@ fun PasswordField(password: String, onPasswordChange: (String) -> Unit, isError:
         mutableStateOf(false)
     }
 
-    TextField(
+    OutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 8.dp),
@@ -171,16 +201,26 @@ fun PasswordField(password: String, onPasswordChange: (String) -> Unit, isError:
             }
         },
         label = { Text(text = "Contraseña") },
-        isError = isError
+        isError = isError,
     )
     if (isError) {
-        Text(text = "La contraseña debe tener al menos 8 caracteres, 1 caracter numeros y 1 caracter alfanumericos")
+        Text(
+            modifier = Modifier.padding(8.dp),
+            text = "La contraseña debe tener al menos 8 caracteres, 1 caracter numeros y 1 caracter alfanumericos",
+            style = TextStyle(
+                fontSize = 15.sp,
+                textAlign = TextAlign.Center
+            ),
+            color = Color.Red
+        )
     }
 }
 
 @Composable
 fun ConfirmButton(viewModel: LoginViewModel, username: String, password: String, context: Context) {
     ElevatedButton(onClick = {
+        //var email = username.replace("\\s".toRegex(), "")
+        username.replace(" ","")
         viewModel.login(username, password)
     }) {
         Text(text = "Iniciar Sesion")

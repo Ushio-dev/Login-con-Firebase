@@ -26,8 +26,8 @@ class LoginViewModel(
         get() = _passwordErrorState
 
     fun login(username: String, password: String) {
-        _usernameErrorState.value = isValidText(username)
-        _passwordErrorState.value = isValidPassword(password)
+        _usernameErrorState.value = isInvalidUsername(username)
+        _passwordErrorState.value = isInvalidPassword(password)
 
         if (!_usernameErrorState.value && !_passwordErrorState.value) {
             viewModelScope.launch {
@@ -58,28 +58,28 @@ class LoginViewModel(
         _uiState.value = LoginUIState.SignOut
     }
 
-    private fun isValidText(username: String): Boolean {
+    private fun isInvalidUsername(username: String): Boolean {
         // android.util.Patterns.EMAIL_ADDRESS.matcher(username) valida el email
         //return username.matches(Regex("[a-zA-Z]+")) && android.util.Patterns.EMAIL_ADDRESS.matcher(username).matches()
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(username).matches()
+        return !android.util.Patterns.EMAIL_ADDRESS.matcher(username).matches()
     }
 
-    private fun isValidPassword(password: String): Boolean {
+    private fun isInvalidPassword(password: String): Boolean {
         if (password.length < 8) {
-            return false
+            return true
         }
 
         val isThereAnyNumber = password.any { it.isDigit() }
         if (!isThereAnyNumber) {
-            return false
+            return true
         }
 
         val isThereAnyNoAlphaNumer = password.any { it.isLetterOrDigit() }
         if (!isThereAnyNoAlphaNumer) {
-            return false
+            return true
         }
 
-        return true
+        return false
     }
 
 
