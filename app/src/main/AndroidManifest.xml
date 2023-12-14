@@ -13,10 +13,11 @@
         android:theme="@style/Theme.LoginConFirebaseCompose"
         tools:targetApi="31">
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".view.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.LoginConFirebaseCompose">
+            android:theme="@style/Theme.LoginSplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
